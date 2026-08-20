@@ -4,3 +4,6 @@ pandas
 matplotlib
 seaborn
 scikit-learn
+category_encoders
+Flask
+joblib
