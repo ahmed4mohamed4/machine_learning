@@ -10,3 +10,5 @@ presentations
 test
 # task
 task
+
+__pycache__
