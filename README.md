@@ -12,6 +12,8 @@ A hands-on collection of notebooks, datasets, and mini-projects created while le
 | --- | --- |
 | 1 | [Statistics](1_statistics/notebooks/main.ipynb) |
 | 2 | [Python basics](2_python_basics/notebooks/main.ipynb) |
+| 3 | Numpy - Pandas - Matplotlib ⏳ |
+| 4 | Linear Regression ⏳ |
 
 ## Repository layout
 
@@ -19,14 +21,11 @@ A hands-on collection of notebooks, datasets, and mini-projects created while le
 machine_learning/
 ├── 1_statistics/                         # Statistics foundations
 ├── 2_python_basics/                      # Core Python
+├── images/                               # Repository images (e.g. gifs)
+├── README.md                             # Project overview and setup
+├── .gitignore                            # Git ignore rules
 └── requirements.txt                      # Python dependencies
-└── README.md
 ```
-
-Most learning modules use the same structure:
-
-- `notebooks/` — guided examples and experiments.
-- `data/` — datasets used by that module, when needed.when available.
 
 ## Getting started
 
@@ -51,7 +50,3 @@ source .venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
-
-## Requirements
-
-See [requirements.txt](requirements.txt)
