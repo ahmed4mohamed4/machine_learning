@@ -1,9 +1,12 @@
+# env
 .venv
+# setting | config
 .vscode
+.idea
+# ppt -> keep it
 presentations
 *.pdf
-soft_skills
-english
+# test
 test
+# task
 task
-.idea
