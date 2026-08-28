@@ -3,7 +3,8 @@
 # setting | config
 .vscode
 .idea
-# ppt -> keep it
+# ppt | PDF -> keep it
+PDFs/*
 presentations
 *.pdf
 # test
