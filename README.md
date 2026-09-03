@@ -14,6 +14,7 @@ A hands-on collection of notebooks, datasets, and mini-projects created while le
 | 2 | [Python basics](2_python_basics/notebooks/main.ipynb) |
 | 3 | Numpy - Pandas - Matplotlib ⏳ |
 | 4 | Linear Regression ⏳ |
+| ⭐ |  [projects](projects/) |
 
 ## Repository layout
 
