@@ -11,22 +11,11 @@ A hands-on collection of notebooks, datasets, and mini-projects created while le
 | Step | Topic  |
 | --- | --- |
 | 1 | [Statistics](1_statistics/notebooks/main.ipynb) |
-| 2 | [Python basics](2_python_basics/notebooks/main.ipynb) |
+| 2 | [Python basics & OOP concepts](2_python_basics/notebooks/main.ipynb) |
 | 3 | Numpy - Pandas - Matplotlib ⏳ |
 | 4 | Linear Regression ⏳ |
 | ⭐ |  [projects](projects/) |
 
-## Repository layout
-
-```text
-machine_learning/
-├── 1_statistics/                         # Statistics foundations
-├── 2_python_basics/                      # Core Python
-├── images/                               # Repository images (e.g. gifs)
-├── README.md                             # Project overview and setup
-├── .gitignore                            # Git ignore rules
-└── requirements.txt                      # Python dependencies
-```
 
 ## Getting started
 
