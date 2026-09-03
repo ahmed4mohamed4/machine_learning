@@ -10,8 +10,8 @@ A hands-on collection of notebooks, datasets, and mini-projects created while le
 
 | Step | Topic  |
 | --- | --- |
-| 1 | [Statistics](1_statistics/notebooks/main.ipynb) |
-| 2 | [Python basics & OOP concepts](2_python_basics/notebooks/main.ipynb) |
+| 1 | [Statistics & Linear Algebra](1_statistics_linear_algebra/) |
+| 2 | [Python basics & OOP concepts](2_python_basics/) |
 | 3 | Numpy - Pandas - Matplotlib ⏳ |
 | 4 | Linear Regression ⏳ |
 | ⭐ |  [projects](projects/) |
@@ -32,11 +32,13 @@ python -m venv .venv
 
 3. Activate the virtual environment.
 ```bash
-source .venv/bin/activate
+source .venv/bin/activate # Linux
+```
+```bash
+source .venv/Scripts/activate # Windows
 ```
 
 4. Install the dependencies.
-
 ```bash
 pip install -r requirements.txt
 ```
