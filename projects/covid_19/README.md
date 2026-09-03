@@ -33,28 +33,6 @@ The notebook creates a binary target named `DIED`:
 │   ├── covid.webp
 │   ├── earth.webp
 ├── model/
+├── streamlit app/
 └── README.md
-└── requirements.txt
-```
-
-## Setup & Run locally
-
-```bash
-git clone https://github.com/ahmed4mohamed4/covid_19.git
-```
-
-```bash
-cd covid_19
-```
-
-```bash
-python -m venv .venv
-```
-
-```bash
-source .venv/bin/activate
-```
-
-```bash
-pip install -r requirements.txt 
 ```
