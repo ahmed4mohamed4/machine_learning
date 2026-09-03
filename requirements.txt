@@ -4,6 +4,7 @@ pandas
 matplotlib
 seaborn
 scikit-learn
+joblib
+streamlit
 category_encoders
 Flask
-joblib
