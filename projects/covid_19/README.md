@@ -28,7 +28,7 @@ The notebook creates a binary target named `DIED`:
 ```text
 .
 ├── data/
-│   └── covid.csv
+│   └── covid_19.csv
 ├── images/
 │   ├── covid.webp
 │   ├── earth.webp
