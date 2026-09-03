@@ -4,7 +4,7 @@
 .vscode
 .idea
 # ppt | PDF -> keep it
-PDFs/*
+PDFs
 presentations
 *.pdf
 # test
