@@ -3,7 +3,7 @@
 <div align= "center">
     <image src= "./assets/hi_bot.gif" alt= "hi_bot" height= "300">
 </div>
-
+ 
 A hands-on collection of notebooks, datasets, and mini-projects created while learning machine learning with Python.
 
 ## Learning path
