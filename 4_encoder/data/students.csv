@@ -1,0 +1,22 @@
+Name,Age,Salary,City,Education,Target
+Mohamed,43.0,14080,Dubai,Master,0
+Zaid,39.0,8393,Cairo,PhD,0
+Ahmed Mohamed,29.0,13627,Dubai,High School,0
+Zaid,,11792,Dubai,Bachelor,0
+Zaid,34.0,13555,Dubai,PhD,0
+Ahmed Zaid,44.0,13253,Dubai,High School,0
+Ahmed Mohamed,44.0,11433,Dubai,PhD,1
+Ahmed Mohamed,27.0,13233,Dubai,High School,0
+Ahmed Mohamed,33.0,14016,Dubai,Bachelor,1
+Zaid,32.0,10513,Cairo,Master,1
+Mohamed,32.0,5612,Paris,High School,1
+Ahmed Mohamed,36.0,10041,Dubai,PhD,0
+Zaid,29.0,12555,Dubai,Bachelor,0
+Ahmed Zaid,40.0,9235,Dubai,High School,0
+Mohamed,37.0,8486,Dubai,PhD,0
+Ahmed Zaid,42.0,10099,Dubai,PhD,1
+Mohamed,20.0,12670,Dubai,PhD,0
+Zaid,22.0,13748,Paris,High School,0
+Ahmed,36.0,3775,Paris,High School,0
+Mohamed,24.0,11226,Dubai,High School,0
+Ahmed Zaid,44.0,13253,Dubai,High School,0
