@@ -13,7 +13,7 @@ A hands-on collection of notebooks, datasets, and mini-projects created while le
 | 1 | [Statistics & Linear Algebra](1_statistics_linear_algebra/) |
 | 2 | [Python basics & OOP concepts](2_python_basics/) |
 | 3 | [Numpy - Pandas - Matplotlib](3_numpy_pandas_matplotlib/) |
-| 4 | Encoder ⏳ |
+| 4 |  [Encoder](./4_encoder/) |
 | 5 | Linear Regression ⏳ |
 | ⭐ |  [projects](projects/) |
 
