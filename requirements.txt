@@ -8,3 +8,4 @@ joblib
 streamlit
 category_encoders
 Flask
+kagglehub
