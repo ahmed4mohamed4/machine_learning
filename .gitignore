@@ -13,3 +13,7 @@ test
 task
 
 __pycache__
+
+
+projects/used_car_price/data/
+
