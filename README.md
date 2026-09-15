@@ -8,7 +8,7 @@
 <br>
 <br>
 
-| Step | Topic  |
+| Step | Topic |
 | --- | --- |
 | 1 | [Statistics & Linear Algebra](1_statistics_linear_algebra/) |
 | 2 | [Python basics & OOP concepts](2_python_basics/) |
