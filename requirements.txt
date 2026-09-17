@@ -6,6 +6,8 @@ seaborn
 # scikit-learn
 joblib
 streamlit
-category_encoders
+# category_encoders
 Flask
 kagglehub
+scikit-learn==1.6.1
+category-encoders==2.8.1

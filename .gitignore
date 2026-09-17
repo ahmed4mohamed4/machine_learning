@@ -6,6 +6,7 @@
 .idea
 .agents/
 .claude/
+.streamlit
 # ppt | PDF -> keep it
 PDFs
 presentations
