@@ -1,0 +1,7 @@
+streamlit
+pandas
+numpy
+joblib
+scikit-learn==1.6.1
+category-encoders==2.8.1
+plotly
