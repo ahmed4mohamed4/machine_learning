@@ -3,7 +3,7 @@ numpy
 pandas
 matplotlib
 seaborn
-scikit-learn
+# scikit-learn
 joblib
 streamlit
 category_encoders

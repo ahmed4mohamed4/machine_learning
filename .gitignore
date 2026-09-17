@@ -1,8 +1,11 @@
 # env
 .venv
+.venv-deploy/
 # setting | config
 .vscode
 .idea
+.agents/
+.claude/
 # ppt | PDF -> keep it
 PDFs
 presentations
