@@ -33,7 +33,7 @@ python -m venv .venv
 
 3. Activate the virtual environment.
 ```bash
-source .venv/bin/activate # Linux
+source .venv/bin/activate # Linux | Mac
 ```
 ```bash
 source .venv/Scripts/activate # Windows
