@@ -14,7 +14,8 @@
 | 2 | [Python basics & OOP concepts](2_python_basics/) |
 | 3 | [Numpy - Pandas - Matplotlib](3_numpy_pandas_matplotlib/) |
 | 4 |  [Encoder](./4_encoder/) |
-| 5 | Linear Regression ⏳ |
+| 5 | [Linear Regression](./5_linear_regression/)|
+| 5 | Logistic Regression ⏳|
 | ⭐ |  [projects](projects/) |
 
 
