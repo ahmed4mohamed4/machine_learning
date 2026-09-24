@@ -9,5 +9,6 @@ streamlit
 # category_encoders
 Flask
 kagglehub
-scikit-learn==1.6.1
+scikit-learn
 category-encoders==2.8.1
+openpyxl
