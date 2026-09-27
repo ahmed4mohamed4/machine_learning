@@ -13,3 +13,4 @@ scikit-learn
 category-encoders==2.8.1
 openpyxl
 plotly
+nbconvert
