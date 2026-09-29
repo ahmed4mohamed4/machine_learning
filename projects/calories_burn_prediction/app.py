@@ -26,6 +26,8 @@ INPUT_COLUMNS = [
     "Gender", "Age", "Height", "Weight", "Duration", "Heart_Rate", "Body_Temp"
 ]
 NUMERIC_MODEL_COLUMNS = ["Age", "Duration", "Heart_Rate", "Body_Temp", "BMI"]
+SELECTED_MODEL = "Hist Gradient Boosting"
+SELECTED_TEST_METRICS = {"MAE": "3.52", "RMSE": "6.39", "R²": "0.99"}
 
 
 @st.cache_data(show_spinner=False)
@@ -65,8 +67,9 @@ def training_preprocessors():
         features, target, test_size=0.2, random_state=42
     )
 
+    # The notebook imputes Heart_Rate globally and Weight within each Gender.
     numeric_imputer = SimpleImputer(strategy="median").fit(
-        train_features[["Weight", "Heart_Rate"]]
+        train_features[["Heart_Rate"]]
     )
     categorical_imputer = SimpleImputer(strategy="most_frequent").fit(
         train_features[["Gender"]]
@@ -78,28 +81,46 @@ def training_preprocessors():
     encoder = OneHotEncoder(
         drop="first", handle_unknown="ignore", sparse_output=False
     ).fit(encoded_training_gender[["Gender"]])
-    return numeric_imputer, categorical_imputer, encoder
+    training_features = train_features.copy()
+    training_features["Heart_Rate"] = numeric_imputer.transform(
+        training_features[["Heart_Rate"]]
+    )[:, 0]
+    training_features[["Gender"]] = categorical_imputer.transform(
+        training_features[["Gender"]]
+    )
+    weight_medians = training_features.groupby("Gender")["Weight"].median()
+    training_features["Weight"] = training_features["Weight"].fillna(
+        training_features["Gender"].map(weight_medians)
+    )
+    training_features["BMI"] = training_features["Weight"] / (
+        training_features["Height"] / 100
+    ) ** 2
+    return numeric_imputer, categorical_imputer, encoder, weight_medians
 
 
 def make_prediction_features(input_row: pd.DataFrame, model) -> pd.DataFrame:
-    """Transform original user fields into the final model's unscaled input."""
-    numeric_imputer, categorical_imputer, encoder = training_preprocessors()
+    """Transform user fields into the saved estimator's expected raw features."""
+    numeric_imputer, categorical_imputer, encoder, weight_medians = training_preprocessors()
     prepared = input_row.copy()
-    prepared[["Weight", "Heart_Rate"]] = numeric_imputer.transform(
-        prepared[["Weight", "Heart_Rate"]]
-    )
+    prepared["Heart_Rate"] = numeric_imputer.transform(
+        prepared[["Heart_Rate"]]
+    )[:, 0]
     prepared[["Gender"]] = categorical_imputer.transform(prepared[["Gender"]])
+    prepared["Weight"] = prepared["Weight"].fillna(
+        prepared["Gender"].map(weight_medians)
+    )
 
     # BMI is engineered internally; users only supply height and weight.
     prepared["BMI"] = prepared["Weight"] / (prepared["Height"] / 100) ** 2
-    numeric = prepared[NUMERIC_MODEL_COLUMNS].copy()
     encoded_gender = pd.DataFrame(
         encoder.transform(prepared[["Gender"]]),
         columns=encoder.get_feature_names_out(["Gender"]),
         index=prepared.index,
     )
-    processed = pd.concat([numeric, encoded_gender], axis=1)
-
+    processed = pd.concat(
+        [prepared[NUMERIC_MODEL_COLUMNS].copy(), encoded_gender], axis=1
+    )
+    # Match the feature schema recorded when the saved estimator was fitted.
     expected_columns = list(model.feature_names_in_)
     processed = processed.reindex(columns=expected_columns)
     if processed.isna().any().any():
@@ -110,7 +131,7 @@ def make_prediction_features(input_row: pd.DataFrame, model) -> pd.DataFrame:
 def model_results() -> pd.DataFrame:
     """Recorded train/test results from the project's model-comparison notebook."""
     rows = [
-        ["Hist Gradient Boosting", 3.05, 3.53, -0.48, 5.03, 7.04, -2.01, 0.99, 0.99, 0.01],
+        ["Hist Gradient Boosting", 3.03, 3.52, -0.49, 5.05, 6.39, -1.34, 0.99, 0.99, 0.00],
         ["Extra Trees", 0.00, 3.80, -3.80, 0.00, 7.53, -7.52, 1.00, 0.99, 0.01],
         ["Random Forest", 1.43, 3.71, -2.29, 2.62, 7.57, -4.95, 1.00, 0.99, 0.01],
         ["Gradient Boosting", 4.34, 4.54, -0.20, 7.03, 8.06, -1.03, 0.99, 0.98, 0.00],
@@ -136,11 +157,11 @@ def home_page():
         "model easy to explore and use."
     )
     st.info("The model predicts the target variable: **Calories**.")
-    st.write("**Final selected model:** HistGradientBoostingRegressor")
+    st.write(f"**Final selected model:** {SELECTED_MODEL}")
     a, b, c = st.columns(3)
-    a.metric("Test MAE", "3.53")
-    b.metric("Test RMSE", "7.04")
-    c.metric("Test R²", "0.99")
+    a.metric("Test MAE", SELECTED_TEST_METRICS["MAE"])
+    b.metric("Test RMSE", SELECTED_TEST_METRICS["RMSE"])
+    c.metric("Test R²", SELECTED_TEST_METRICS["R²"])
     st.caption("Use the sidebar to review the data and workflow, or make a prediction.")
 
 
@@ -227,7 +248,7 @@ def preprocessing_page():
     - One-hot encoded `Gender` with `drop="first"`, `handle_unknown="ignore"`, and `sparse_output=False`.
     - The final numerical features were `Age`, `Duration`, `Heart_Rate`, `Body_Temp`, and `BMI`.
     """)
-    st.info("Scaling was tested for applicable models. The selected tree-based model uses the unscaled feature representation.")
+    st.info("The selected Hist Gradient Boosting model uses unscaled numerical features and one-hot encoded gender.")
 
 
 def comparison_page():
@@ -237,18 +258,18 @@ def comparison_page():
     st.dataframe(results, hide_index=True, use_container_width=True)
     st.caption("Scaled models: Linear Regression, Ridge, Lasso, Elastic Net, SVR (Linear), SVR (RBF), and KNN Regressor. The remaining models used unscaled features.")
     st.warning("Models identified as overfitting: Extra Trees, Random Forest, and Decision Tree. SVR (Linear) was weaker, but its train/test results were relatively close.")
-    st.subheader("Selected model: HistGradientBoostingRegressor")
+    st.subheader(f"Selected model: {SELECTED_MODEL}")
     selected = pd.DataFrame({
         "Metric": ["MAE", "RMSE", "R²"],
-        "Train": [3.05, 5.03, 0.99],
-        "Test": [3.53, 7.04, 0.99],
-        "Difference": [-0.48, -2.01, 0.01],
+        "Train": [3.03, 5.05, 0.99],
+        "Test": [3.52, 6.39, 0.99],
+        "Difference": [-0.49, -1.34, 0.00],
     })
     st.dataframe(selected, hide_index=True, use_container_width=True)
     a, b, c = st.columns(3)
-    a.metric("Test MAE", "3.53")
-    b.metric("Test RMSE", "7.04")
-    c.metric("Test R²", "0.99")
+    a.metric("Test MAE", SELECTED_TEST_METRICS["MAE"])
+    b.metric("Test RMSE", SELECTED_TEST_METRICS["RMSE"])
+    c.metric("Test R²", SELECTED_TEST_METRICS["R²"])
 
 
 def prediction_page(model):
@@ -296,7 +317,7 @@ def main():
     st.sidebar.title("Navigation")
     page = st.sidebar.radio("Go to", ["Home", "About the Data", "Exploratory Data Analysis", "Data Preprocessing", "Model Comparison", "Prediction"])
     st.sidebar.divider()
-    st.sidebar.caption("Final model: HistGradientBoostingRegressor")
+    st.sidebar.caption(f"Final model: {SELECTED_MODEL}")
 
     model = load_model()
     if page == "Home":
