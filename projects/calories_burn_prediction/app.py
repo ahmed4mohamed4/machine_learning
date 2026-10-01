@@ -6,6 +6,7 @@ fit in this application.
 """
 
 from pathlib import Path
+import math
 import warnings
 
 import joblib
@@ -26,6 +27,8 @@ INPUT_COLUMNS = [
     "Gender", "Age", "Height", "Weight", "Duration", "Heart_Rate", "Body_Temp"
 ]
 NUMERIC_MODEL_COLUMNS = ["Age", "Duration", "Heart_Rate", "Body_Temp", "BMI"]
+DURATION_MIN = 2
+DURATION_MAX = 30
 SELECTED_MODEL = "Hist Gradient Boosting"
 SELECTED_TEST_METRICS = {"MAE": "3.52", "RMSE": "6.39", "R²": "0.99"}
 
@@ -51,6 +54,21 @@ def clean_before_split(data: pd.DataFrame) -> pd.DataFrame:
     for column, maximum in limits.items():
         cleaned = cleaned[cleaned[column].isna() | (cleaned[column] <= maximum)]
     return cleaned
+
+
+@st.cache_data(show_spinner=False)
+def training_feature_ranges() -> dict[str, tuple[float, float]]:
+    """Return observed ranges from the same cleaned training split as preprocessing."""
+    data = clean_before_split(load_data())
+    features = data.drop(columns=["Calories"])
+    target = data["Calories"]
+    train_features, _, _, _ = train_test_split(
+        features, target, test_size=0.2, random_state=42
+    )
+    return {
+        column: (float(train_features[column].min()), float(train_features[column].max()))
+        for column in ("Heart_Rate", "Body_Temp")
+    }
 
 
 @st.cache_resource(show_spinner=False)
@@ -275,6 +293,19 @@ def comparison_page():
 def prediction_page(model):
     st.title("Predict Calories Burned")
     st.write("Enter the original real-world features below. BMI is calculated automatically and is not an input field.")
+    feature_ranges = training_feature_ranges()
+    heart_rate_min, heart_rate_max = feature_ranges["Heart_Rate"]
+    MIN_HEART_RATE = math.ceil(heart_rate_min)
+    MAX_HEART_RATE = math.floor(heart_rate_max)
+    MIN_BODY_TEMP, MAX_BODY_TEMP = feature_ranges["Body_Temp"]
+    body_temp_options = [
+        tenth / 10
+        for tenth in range(
+            math.ceil(MIN_BODY_TEMP * 10), math.floor(MAX_BODY_TEMP * 10) + 1
+        )
+    ]
+    default_body_temp = min(body_temp_options, key=lambda value: abs(value - 39.0))
+
     with st.form("prediction_form"):
         left, right = st.columns(2)
         with left:
@@ -283,12 +314,48 @@ def prediction_page(model):
             height = st.number_input("Height (cm)", min_value=1.0, max_value=219.0, value=175.0, step=0.1)
             weight = st.number_input("Weight (kg)", min_value=1.0, max_value=119.0, value=70.0, step=0.1)
         with right:
-            duration = st.number_input("Duration", min_value=0.0, value=20.0, step=1.0)
-            heart_rate = st.number_input("Heart Rate", min_value=1.0, max_value=220.0, value=100.0, step=1.0)
-            body_temp = st.number_input("Body Temperature", min_value=1.0, max_value=43.0, value=40.0, step=0.1)
+            duration = st.slider(
+                "Exercise Duration (minutes)",
+                min_value=DURATION_MIN,
+                max_value=DURATION_MAX,
+                value=15,
+                step=1,
+                help=(
+                    f"Supported range: {DURATION_MIN}–{DURATION_MAX} minutes. "
+                    "The model was trained on data within this range."
+                ),
+            )
+            st.caption(f"Supported range: {DURATION_MIN}–{DURATION_MAX} minutes")
+            heart_rate = st.slider(
+                "Heart Rate (bpm)",
+                min_value=MIN_HEART_RATE,
+                max_value=MAX_HEART_RATE,
+                value=min(max(100, MIN_HEART_RATE), MAX_HEART_RATE),
+                step=1,
+                help="Select a heart rate within the supported range of the training data.",
+            )
+            st.caption("Supported range: based on the training data")
+            body_temp = st.selectbox(
+                "Body Temperature (°C)",
+                options=body_temp_options,
+                index=body_temp_options.index(default_body_temp),
+                format_func=lambda value: f"{value:.1f}",
+                help="Select a body temperature within the supported range of the training data.",
+            )
+            st.caption("Supported range: based on the training data")
         submitted = st.form_submit_button("Estimate calories", type="primary", use_container_width=True)
 
     if submitted:
+        if not DURATION_MIN <= duration <= DURATION_MAX:
+            st.error("Duration is outside the supported training range.")
+            st.stop()
+        if not MIN_HEART_RATE <= heart_rate <= MAX_HEART_RATE:
+            st.error("Heart rate is outside the supported training range.")
+            st.stop()
+        if not MIN_BODY_TEMP <= body_temp <= MAX_BODY_TEMP:
+            st.error("Body temperature is outside the supported training range.")
+            st.stop()
+
         original_input = pd.DataFrame([{
             "Gender": gender, "Age": age, "Height": height, "Weight": weight,
             "Duration": duration, "Heart_Rate": heart_rate, "Body_Temp": body_temp,
